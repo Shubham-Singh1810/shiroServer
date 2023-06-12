@@ -49,28 +49,32 @@ module.exports = {
   },
   verifyOtp: async function (body) {
     let result = {};
-    let tempUser = await UserOtp.find({email: body.email, otp: body.otp});
-    if(tempUser.length>0){
-        let obj  = {
-            email : tempUser[0].email,
-            password : tempUser[0].password,
-            userName : tempUser[0].userName,
-        }
-        try {
-            result.data = await new User(obj).save();
-          } catch (error) {
-            result.err = error;
-          }
-    }
-    else{
-        result.message = "Wrong OTP"
+    let tempUser = await UserOtp.find({ email: body.email, otp: body.otp });
+    if (tempUser.length > 0) {
+      let obj = {
+        email: tempUser[0].email,
+        password: tempUser[0].password,
+        userName: tempUser[0].userName,
+      };
+      try {
+        result.data = await new User(obj).save();
+      } catch (error) {
+        result.err = error;
+      }
+    } else {
+      result.message = "Wrong OTP";
     }
     return result;
   },
   login: async function (body) {
     let result = {};
     try {
-      result.data = "login";
+      let logedUser = await User.find({ email: body.email, password: body.password });
+      if (logedUser.length > 0) {
+        result.data = logedUser[0];
+      } else {
+        result.message = "Invalid login details";
+      }
     } catch (error) {
       result.err = error;
     }

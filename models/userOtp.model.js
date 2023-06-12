@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const userSchema = mongoose.Schema(
+const userOtpSchema = mongoose.Schema(
     {   
         email: {
             type: String,
@@ -11,15 +11,12 @@ const userSchema = mongoose.Schema(
         userName: {
             type: String,
         },
-        profileImg:{
-            type: String,
-        },
-        userBio:{
-            type: String,
+        otp:{
+            type : String
         }
     },
     { timestamps: { createdAt: "createdAt" } }
 );
 
-let User = mongoose.model("users", userSchema);
-module.exports = User;
+let UserOtp = mongoose.model("userOtps", userOtpSchema);
+module.exports = UserOtp;

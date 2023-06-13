@@ -16,5 +16,9 @@ module.exports = {
     update : async function(req, res){
         let result = await userServ.update(req.body);
         util.sendResponse(result, req, res);
+    },
+    updateProfileImg : async function(req, res){
+        let result = await userServ.updateProfileImg(req.body, req.file.path);
+        util.sendResponse(result, req, res);
     }
 }

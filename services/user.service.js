@@ -1,6 +1,8 @@
 const User = require("../models/user.model");
 const UserOtp = require("../models/userOtp.model");
 const nodemailer = require("nodemailer");
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
 module.exports = {
   sendOtp: async function (body) {
     let otp = Math.floor(Math.random() * 100000) + 100000;
@@ -72,6 +74,7 @@ module.exports = {
       let logedUser = await User.find({ email: body.email, password: body.password });
       if (logedUser.length > 0) {
         result.data = logedUser[0];
+        result.token = await jwt.sign({ logedUser }, process.env.JWT_KEY);
       } else {
         result.message = "Invalid login details";
       }
@@ -82,8 +85,23 @@ module.exports = {
   },
   update: async function (body) {
     let result = {};
+    console.log("body", body)
     try {
       result.data = await User.findByIdAndUpdate(body._id, { $set: body }, { new: true });
+      result.message = "Record Updated Successfully"
+    } catch (error) {
+      result.err = error;
+    }
+    return result;
+  },
+  updateProfileImg: async function (body, file_path) {
+    let result = {};
+    let obj ={
+      profileImg : process.env.BASE_URL+file_path
+    }
+    try {
+      result.data = await User.findByIdAndUpdate(body._id, { $set: obj }, { new: true });
+      result.message = "Record Updated Successfully"
     } catch (error) {
       result.err = error;
     }

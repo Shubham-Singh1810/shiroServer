@@ -66,7 +66,7 @@ module.exports = {
         result.err = error;
       }
     } else {
-      result.message = "Wrong OTP";
+      result.message = "Wrong sdhb OTP";
     }
     return result;
   },

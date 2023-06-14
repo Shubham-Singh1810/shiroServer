@@ -130,9 +130,14 @@ module.exports = {
     }
   },
   getMessage:async function(req){
-    let { sender_id,reciever_id} = req.params;
+    let { sender_id,reciever_id} = req.body.id;
+    console.log("body is ",req.body)
+    console.log("sender_id is " ,sender_id,"reciever_id is ", reciever_id)
     try{
-      let result = await Message.findAll({});
+      let result = await Message.find({ $or : [
+        {sender_id : sender_id},
+        {sender_id : reciever_id}
+      ]}).sort({createdAt : 1});
       return {
         result : result
       }
@@ -142,5 +147,6 @@ module.exports = {
         err: err
       }
     }
+    
   }
 };

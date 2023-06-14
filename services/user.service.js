@@ -53,20 +53,32 @@ module.exports = {
   verifyOtp: async function (body) {
     let result = {};
     try {
-       result.data = await UserOtp.find({ email: body.email, otp: body.otp });
+      let tempUser = await UserOtp.find({ email: body.email, otp: body.otp });
+      console.log(tempUser[0], "tempuser");
+      if (tempUser.length > 0) {
+        let obj ={
+           email : tempUser[0].email,
+           password : tempUser[0].password,
+           userName : tempUser[0].userName
+        }
+        result.data = await new User(obj).save();
+        result.message = "User verified successfully";
+      } else {
+        result.message = "Incorrect otp";
+      }
     } catch (error) {
-        result.message = "Something went wrong"
+      result.message = error;
     }
     return result;
   },
-  addUser : async function(body){
-       let result ={};
-       try {
-        result.data = await new User(body).save();
-       } catch (error) {
-        result.err = error
-       }
-       return result
+  addUser: async function (body) {
+    let result = {};
+    try {
+      result.data = await new User(body).save();
+    } catch (error) {
+      result.err = error;
+    }
+    return result;
   },
   login: async function (body) {
     let result = {};

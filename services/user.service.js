@@ -52,7 +52,7 @@ module.exports = {
   verifyOtp: async function (body) {
     let result = {};
     let tempUser = await UserOtp.find({ email: body.email, otp: body.otp });
-    if (tempUser.length > 0) {
+    if (tempUser && tempUser.length > 0) {
       let obj = {
         email: tempUser[0].email,
         password: tempUser[0].password,

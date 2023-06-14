@@ -1,5 +1,6 @@
 const User = require("../models/user.model");
 const UserOtp = require("../models/userOtp.model");
+const Message = require("../models/message.model");
 const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
@@ -71,7 +72,10 @@ module.exports = {
   login: async function (body) {
     let result = {};
     try {
-      let logedUser = await User.find({ email: body.email, password: body.password });
+      let logedUser = await User.find({
+        email: body.email,
+        password: body.password,
+      });
       if (logedUser.length > 0) {
         result.data = logedUser[0];
         result.token = await jwt.sign({ logedUser }, process.env.JWT_KEY);
@@ -87,6 +91,12 @@ module.exports = {
     let result = {};
     console.log("body", body)
     try {
+      result.data = await User.findByIdAndUpdate(
+        body._id,
+        { $set: body },
+        { new: true }
+      );
+
       result.data = await User.findByIdAndUpdate(body._id, { $set: body }, { new: true });
       result.message = "Record Updated Successfully"
     } catch (error) {
@@ -107,4 +117,36 @@ module.exports = {
     }
     return result;
   },
+  sendMessage: async function (body) {
+    try {
+      let result = await new Message(body).save();
+      return {
+        result: result
+      }
+    } catch (err) {
+      return {
+        err: err,
+      };
+    }
+  },
+  getMessage:async function(req){
+    let { sender_id,reciever_id} = req.body.id;
+    console.log("body is ",req.body)
+    console.log("sender_id is " ,sender_id,"reciever_id is ", reciever_id)
+    try{
+      let result = await Message.find({ $or : [
+        {sender_id : sender_id},
+        {sender_id : reciever_id}
+      ]}).sort({createdAt : 1});
+      return {
+        result : result
+      }
+    }
+    catch(err){
+      return{
+        err: err
+      }
+    }
+    
+  }
 };

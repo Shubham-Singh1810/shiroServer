@@ -1,3 +1,4 @@
+const { reset } = require("nodemon");
 const userServ = require("../services/user.service");
 const util = require("../utils/util")
 module.exports = {
@@ -16,6 +17,14 @@ module.exports = {
     update : async function(req, res){
         let result = await userServ.update(req.body);
         util.sendResponse(result, req, res);
+    },
+    sendMessage: async function(req,res){
+        let result = await userServ.sendMessage(req.body);
+        util.sendResponse(result,req,res);
+    },
+    getMessage : async function(req,res){
+        let result = await userServ.getMessage(req);
+        util.sendResponse(result,req,res);
     },
     updateProfileImg : async function(req, res){
         let result = await userServ.updateProfileImg(req.body, req.file.path);

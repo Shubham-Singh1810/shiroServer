@@ -25,5 +25,9 @@ module.exports = {
     getMessage : async function(req,res){
         let result = await userServ.getMessage(req);
         util.sendResponse(result,req,res);
+    },
+    updateProfileImg : async function(req, res){
+        let result = await userServ.updateProfileImg(req.body, req.file.path);
+        util.sendResponse(result, req, res);
     }
 }

@@ -52,22 +52,24 @@ module.exports = {
   },
   verifyOtp: async function (body) {
     let result = {};
-    let tempUser = await UserOtp.find({ email: body.email, otp: body.otp });
-    console.log(tempUser)
-    if (tempUser?.length > 0) {
-      let obj = {
-        email: tempUser[0].email,
-        password: tempUser[0].password,
-        userName: tempUser[0].userName,
-      };
-      try {
-        result.data = await new User(obj).save();
-      } catch (error) {
-        result.err = error;
-      }
-    } else {
-      result.message = "Wrong sdhb OTP";
+    try {
+      let tempUser = await UserOtp.find({ email: body.email, otp: body.otp });
+      if (tempUser?.length > 0) {
+        let obj = {
+          email: tempUser[0].email,
+          password: tempUser[0].password,
+          userName: tempUser[0].userName,
+        };
+        try {
+          result.data = await new User(obj).save();
+        } catch (error) {
+          result.err = error;
+        }
+      } 
+    } catch (error) {
+        result.message("Something went wrong")
     }
+
     return result;
   },
   login: async function (body) {
@@ -90,16 +92,12 @@ module.exports = {
   },
   update: async function (body) {
     let result = {};
-    console.log("body", body)
+    console.log("body", body);
     try {
-      result.data = await User.findByIdAndUpdate(
-        body._id,
-        { $set: body },
-        { new: true }
-      );
+      result.data = await User.findByIdAndUpdate(body._id, { $set: body }, { new: true });
 
       result.data = await User.findByIdAndUpdate(body._id, { $set: body }, { new: true });
-      result.message = "Record Updated Successfully"
+      result.message = "Record Updated Successfully";
     } catch (error) {
       result.err = error;
     }
@@ -107,12 +105,12 @@ module.exports = {
   },
   updateProfileImg: async function (body, file_path) {
     let result = {};
-    let obj ={
-      profileImg : process.env.BASE_URL+file_path
-    }
+    let obj = {
+      profileImg: process.env.BASE_URL + file_path,
+    };
     try {
       result.data = await User.findByIdAndUpdate(body._id, { $set: obj }, { new: true });
-      result.message = "Record Updated Successfully"
+      result.message = "Record Updated Successfully";
     } catch (error) {
       result.err = error;
     }
@@ -122,32 +120,29 @@ module.exports = {
     try {
       let result = await new Message(body).save();
       return {
-        result: result
-      }
+        result: result,
+      };
     } catch (err) {
       return {
         err: err,
       };
     }
   },
-  getMessage:async function(req){
-    let { sender_id,reciever_id} = req.body.id;
-    console.log("body is ",req.body)
-    console.log("sender_id is " ,sender_id,"reciever_id is ", reciever_id)
-    try{
-      let result = await Message.find({ $or : [
-        {sender_id : sender_id},
-        {sender_id : reciever_id}
-      ]}).sort({createdAt : 1});
+  getMessage: async function (req) {
+    let { sender_id, reciever_id } = req.body.id;
+    console.log("body is ", req.body);
+    console.log("sender_id is ", sender_id, "reciever_id is ", reciever_id);
+    try {
+      let result = await Message.find({ $or: [{ sender_id: sender_id }, { sender_id: reciever_id }] }).sort({
+        createdAt: 1,
+      });
       return {
-        result : result
-      }
+        result: result,
+      };
+    } catch (err) {
+      return {
+        err: err,
+      };
     }
-    catch(err){
-      return{
-        err: err
-      }
-    }
-    
-  }
+  },
 };

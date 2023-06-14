@@ -1,5 +1,6 @@
 const User = require("../models/user.model");
 const UserOtp = require("../models/userOtp.model");
+const Message = require("../models/message.model");
 const nodemailer = require("nodemailer");
 module.exports = {
   sendOtp: async function (body) {
@@ -69,7 +70,10 @@ module.exports = {
   login: async function (body) {
     let result = {};
     try {
-      let logedUser = await User.find({ email: body.email, password: body.password });
+      let logedUser = await User.find({
+        email: body.email,
+        password: body.password,
+      });
       if (logedUser.length > 0) {
         result.data = logedUser[0];
       } else {
@@ -83,10 +87,40 @@ module.exports = {
   update: async function (body) {
     let result = {};
     try {
-      result.data = await User.findByIdAndUpdate(body._id, { $set: body }, { new: true });
+      result.data = await User.findByIdAndUpdate(
+        body._id,
+        { $set: body },
+        { new: true }
+      );
     } catch (error) {
       result.err = error;
     }
     return result;
   },
+  sendMessage: async function (body) {
+    try {
+      let result = await new Message(body).save();
+      return {
+        result: result
+      }
+    } catch (err) {
+      return {
+        err: err,
+      };
+    }
+  },
+  getMessage:async function(req){
+    let { sender_id,reciever_id} = req.params;
+    try{
+      let result = await Message.findAll({});
+      return {
+        result : result
+      }
+    }
+    catch(err){
+      return{
+        err: err
+      }
+    }
+  }
 };

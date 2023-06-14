@@ -7,6 +7,10 @@ router.route("/sendOtp").post(userController.sendOtp);
 router.route("/verifyOtp").post(userController.verifyOtp);
 router.route("/login").post(userController.login);
 router.route("/update").put(userController.update);
+router.route("/message")
+                     .post(userController.sendMessage)
+                     .get(userController.getMessage);
+
 
  
 

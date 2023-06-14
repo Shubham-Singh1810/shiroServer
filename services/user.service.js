@@ -54,7 +54,7 @@ module.exports = {
     let result = {};
     try {
       let tempUser = await UserOtp.find({ email: body.email, otp: body.otp });
-      if (tempUser?.length > 0) {
+      if (tempUser && tempUser[0].id) {
         let obj = {
           email: tempUser[0].email,
           password: tempUser[0].password,
@@ -67,7 +67,7 @@ module.exports = {
         }
       } 
     } catch (error) {
-        result.message("Something went wrong")
+        result.message = "Something went wrong"
     }
 
     return result;

@@ -53,29 +53,25 @@ module.exports = {
   verifyOtp: async function (body) {
     let result = {};
     try {
-      let tempUser = await UserOtp.find({ email: body.email, otp: body.otp });
-      if (tempUser && tempUser[0].id) {
-        let obj = {
-          email: tempUser[0].email,
-          password: tempUser[0].password,
-          userName: tempUser[0].userName,
-        };
-        try {
-          result.data = await new User(obj).save();
-        } catch (error) {
-          result.err = error;
-        }
-      } 
+       result.data = await UserOtp.find({ email: body.email, otp: body.otp });
     } catch (error) {
         result.message = "Something went wrong"
     }
-
     return result;
+  },
+  addUser : async function(body){
+       let result ={};
+       try {
+        result.data = await new User(body).save();
+       } catch (error) {
+        result.err = error
+       }
+       return result
   },
   login: async function (body) {
     let result = {};
     try {
-      let logedUser = await User.find({
+      logedUser = await User.find({
         email: body.email,
         password: body.password,
       });
@@ -94,8 +90,6 @@ module.exports = {
     let result = {};
     console.log("body", body);
     try {
-      result.data = await User.findByIdAndUpdate(body._id, { $set: body }, { new: true });
-
       result.data = await User.findByIdAndUpdate(body._id, { $set: body }, { new: true });
       result.message = "Record Updated Successfully";
     } catch (error) {

@@ -10,6 +10,10 @@ module.exports = {
         let result = await userServ.verifyOtp(req.body);
         util.sendResponse(result, req, res);
     },
+    addUser : async function(req, res){
+        let result = await userServ.addUser(req.body);
+        util.sendResponse(result, req, res);
+    },
     login : async function(req, res){
         let result = await userServ.login(req.body);
         util.sendResponse(result, req, res);

@@ -15,6 +15,7 @@ const imgupload = multer({
 }).single("profileImg");
 router.route("/sendOtp").post(userController.sendOtp);
 router.route("/verifyOtp").post(userController.verifyOtp);
+router.route("/addUser").post(userController.addUser);
 router.route("/login").post(userController.login);
 router.route("/update").put(userController.update);
 router.route("/postmessage").post(userController.sendMessage)

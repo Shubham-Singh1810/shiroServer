@@ -3,6 +3,8 @@ const UserOtp = require("../models/userOtp.model");
 const Message = require("../models/message.model");
 const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
+const { getUserPost } = require("../controller/user.controller");
+const Post = require("../models/post.model");
 require("dotenv").config();
 module.exports = {
   sendOtp: async function (body) {
@@ -53,13 +55,14 @@ module.exports = {
   verifyOtp: async function (body) {
     let result = {};
     try {
-      let tempUser = await UserOtp.find({ email: body.email, otp: body.otp });
-      console.log(tempUser[0], "tempuser");
-      if (tempUser.length > 0) {
+      console.log(body)
+      let tempUser = await UserOtp.findOne(body);
+      console.log(tempUser, "tempuser")
+      if (tempUser) {
         let obj ={
-           email : tempUser[0].email,
-           password : tempUser[0].password,
-           userName : tempUser[0].userName
+           email : tempUser.email,
+           password : tempUser.password,
+           userName : tempUser.userName
         }
         result.data = await new User(obj).save();
         result.message = "User verified successfully";
@@ -71,24 +74,15 @@ module.exports = {
     }
     return result;
   },
-  addUser: async function (body) {
-    let result = {};
-    try {
-      result.data = await new User(body).save();
-    } catch (error) {
-      result.err = error;
-    }
-    return result;
-  },
   login: async function (body) {
     let result = {};
+    console.log(body)
     try {
-      logedUser = await User.find({
-        email: body.email,
-        password: body.password,
-      });
-      if (logedUser.length > 0) {
+      logedUser = await User.find(body);
+      console.log(logedUser)
+      if (logedUser?.length > 0) {
         result.data = logedUser[0];
+        result.message = "You are logged in successfully";
         result.token = await jwt.sign({ logedUser }, process.env.JWT_KEY);
       } else {
         result.message = "Invalid login details";
@@ -104,6 +98,16 @@ module.exports = {
     try {
       result.data = await User.findByIdAndUpdate(body._id, { $set: body }, { new: true });
       result.message = "Record Updated Successfully";
+    } catch (error) {
+      result.err = error;
+    }
+    return result;
+  },
+  getUser: async function (id) {
+    let result = {};
+    console.log(id);
+    try {
+      result.data = await User.findOne({_id:id});
     } catch (error) {
       result.err = error;
     }
@@ -151,4 +155,22 @@ module.exports = {
       };
     }
   },
+  getAllUsers : async function (req){
+    let result ={};
+    try {
+      result.data = await User.find({})
+    } catch (error) {
+      result.err = error
+    }
+    return result
+  },
+  getUserPost : async function (id){
+    let result ={};
+    try {
+      result.data = await Post.find({userId : id})
+    } catch (error) {
+      result.err = error
+    }
+    return result
+  }
 };

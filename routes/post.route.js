@@ -15,10 +15,10 @@ const imgupload = multer({
     })
 }).single("imgUrl");
 
-router.route("/").post(auth, imgupload,  postController.add);
-router.route("/").get(auth, postController.listAll);
-router.route("/update").put(auth, postController.update);
-router.route("/:id").get(auth, postController.getDetails);
-router.route("/:id").delete(auth, postController.delete);
+router.route("/").post(imgupload,  postController.add);
+router.route("/").get( postController.listAll);
+router.route("/update").put( postController.update);
+router.route("/:id").get( postController.getDetails);
+router.route("/:id").delete( postController.delete);
 
 module.exports = router

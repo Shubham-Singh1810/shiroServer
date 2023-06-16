@@ -13,15 +13,15 @@ const imgupload = multer({
         }
     })
 }).single("profileImg");
+router.route("/").get(userController.getAllUsers);
+router.route("/userPost/:id").get(userController.getUserPost);
 router.route("/sendOtp").post(userController.sendOtp);
 router.route("/verifyOtp").post(userController.verifyOtp);
-router.route("/addUser").post(userController.addUser);
 router.route("/login").post(userController.login);
 router.route("/update").put(userController.update);
+router.route("/:id").get(userController.getUser);
 router.route("/postmessage").post(userController.sendMessage)
 router.route("/getmessage").post(userController.getMessage);
-
-router.route("/update").put(auth, userController.update);
 router.route("/updateProfileImg").put( imgupload,  userController.updateProfileImg);
 
 
